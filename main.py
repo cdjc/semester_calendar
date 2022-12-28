@@ -13,8 +13,8 @@ gray2 = 220
 gray_break = 200
 holiday_gray = 200
 
-year = 2022
-semester_start = (2023, 2, 20)
+year = 2023
+semester_start = (year, 2, 20)
 weeks = 19  # including mid-semester break
 
 normal_line_width = 0.1
@@ -25,15 +25,32 @@ break_at_end_of_week = 7
 
 assign_week_start = 15
 due_dates = defaultdict(list)
-due_dates[(2, 26)] = ['PRJ Proposal']
-due_dates[(5, 28)] = ['PRJ Journal']
-due_dates[(6,11)] = ['PRJ report']
-due_dates[(6,15)] = ['PRJ poster']
+
+
+def due(month: int, day: int, piece: str):
+    if month < 1 or month > 12:
+        raise ValueError("Month out of range")
+    if day < 1 or day > 31:
+        raise ValueError("Day out of range")
+
+    global due_dates
+    due_dates[(month, day)].append(piece)
+
+
+due(2, 26, 'PRJ Proposal')
+due(5, 28, 'PRJ Journal')
+due(6, 11, 'PRJ report')
+due(6, 15, 'PRJ poster')
+
+due(6, 18, 'SYD Assign 2')
+due(6, 4, 'SYD Journal')
+due(4, 6, 'SYD Assign 1')
+
 holidays = defaultdict(str)
 holidays[(4, 7)] = 'Easter'
 holidays[(4, 10)] = 'Easter'
-holidays[(4,25)] = 'ANZAC'
-holidays[(5,5)] = "King's Birthday"
+holidays[(4, 25)] = 'ANZAC'
+holidays[(5, 5)] = "King's Birthday"
 
 
 class PDF(FPDF):
