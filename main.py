@@ -15,6 +15,7 @@ holiday_gray = 200
 
 year = 2023
 semester_start = (year, 2, 20)
+semester_name = 'S1'
 weeks = 19  # including mid-semester break
 
 normal_line_width = 0.1
@@ -81,7 +82,6 @@ class PDF(FPDF):
         # Color and font restoration:
         self.set_text_color(black)
         self.set_font()
-        # self.set_left_margin(5)
         week_num = 1
         for row in rows:
 
@@ -96,9 +96,6 @@ class PDF(FPDF):
                 txt = str(day.number)
                 if day.number == 1:
                     txt = day.month + ' 1'
-                    # x,y = self.get_x(), self.get_y()
-                    # self.text(x-col_width+1, y+3, txt='foo')
-                    # self.set_xy(x,y)
                 if day.in_break or day.weekdaynum > 5 or day.assign_weeks or day.is_holiday:  # break or a weekend
                     self.set_line_width(heavy_line_width)
                 else:
@@ -180,4 +177,4 @@ for week in range(weeks):
     rows.append(row)
 
 pdf.table(header, rows)
-pdf.output(f"timetable_{year}.pdf")
+pdf.output(f"timetable_{year}_{semester_name}.pdf")
