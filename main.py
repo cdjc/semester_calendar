@@ -41,10 +41,20 @@ due(2, 26, 'PRJ Proposal')
 due(5, 28, 'PRJ Journal')
 due(6, 11, 'PRJ report')
 due(6, 15, 'PRJ poster')
+due(6, 15, 'Academic Adv.')
 
 due(6, 18, 'SYD Assign 2')
 due(6, 4, 'SYD Journal')
 due(4, 6, 'SYD Assign 1')
+
+due(6, 18, 'RES Assign 2')
+due(6, 4, 'RES Journal')
+due(4, 30, 'RES Assign 1')
+
+due(4, 6, 'NET Test')
+due(6, 11, 'NET Assign')
+due(6, 22, 'NET Demo')
+
 
 holidays = defaultdict(str)
 holidays[(4, 7)] = 'Easter'
