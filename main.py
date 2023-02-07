@@ -61,7 +61,7 @@ holidays = defaultdict(str)
 holidays[(4, 7)] = 'Easter'
 holidays[(4, 10)] = 'Easter'
 holidays[(4, 25)] = 'ANZAC'
-holidays[(5, 5)] = "King's Birthday"
+holidays[(6, 5)] = "King's Birthday"
 
 
 class PDF(FPDF):
