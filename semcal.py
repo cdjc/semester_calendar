@@ -13,55 +13,40 @@ gray2 = 220
 gray_break = 200
 holiday_gray = 200
 
-year = 2023
-semester_start = (year, 2, 20)
-semester_name = 'S1'
-weeks = 19  # including mid-semester break
-
 normal_line_width = 0.1
 heavy_line_width = 0.4  # non-teaching days
 week_col_width = 5
 header_height = 6
-break_at_end_of_week = 7
 
-assign_week_start = 15
-due_dates = defaultdict(list)
+def check_date_valid(year: int, month: int, day: int):
+    date(year, month, day) # will raise ValueError if out of range
 
+class Semester:
 
-def due(month: int, day: int, piece: str):
-    if month < 1 or month > 12:
-        raise ValueError("Month out of range")
-    if day < 1 or day > 31:
-        raise ValueError("Day out of range")
+    year: int = None
+    start_month: int = None
+    start_day: int = None
+    weeks_long: int = None
+    break_at_end_of_week: int = None
+    assign_week_start: int = None
 
-    global due_dates
-    due_dates[(month, day)].append(piece)
+    due_dates = defaultdict(list)
+    holidays = defaultdict(str)
 
+    def __init__(self, year:int, month:int, day:int):
+        check_date_valid(year, month, day)
+        self.year = year
+        self.start_month = month
+        self.start_day = day
 
-due(2, 26, 'PRJ Proposal')
-due(5, 28, 'PRJ Journal')
-due(6, 11, 'PRJ report')
-due(6, 15, 'PRJ poster')
-due(6, 15, 'Academic Adv.')
+    def due(self, month: int, day: int, piece: str):
+        check_date_valid(self.year, month, day)
+        self.due_dates[(month, day)].append(piece)
 
-due(6, 18, 'SYD Assign 2')
-due(6, 4, 'SYD Journal')
-due(4, 6, 'SYD Assign 1')
+    def holiday(self, month: int, day: int, name: str):
+        check_date_valid(self.year, month, day)
+        self.holidays[(month, day)] = name
 
-due(6, 18, 'RES Assign 2')
-due(6, 4, 'RES Journal')
-due(4, 30, 'RES Assign 1')
-
-due(4, 6, 'NET Test')
-due(6, 11, 'NET Assign')
-due(6, 22, 'NET Demo')
-
-
-holidays = defaultdict(str)
-holidays[(4, 7)] = 'Easter'
-holidays[(4, 10)] = 'Easter'
-holidays[(4, 25)] = 'ANZAC'
-holidays[(6, 5)] = "King's Birthday"
 
 
 class PDF(FPDF):
@@ -74,7 +59,7 @@ class PDF(FPDF):
         self.set_line_width(normal_line_width)
         self.set_font(style="B")
         col_width = (self.epw - week_col_width) / 7
-        col_height = (self.eph - header_height - 2) / weeks
+        col_height = (self.eph - header_height - 2) / len(rows)
         self.cell(week_col_width, header_height, '', border=1, align="C", fill=True)
         for heading in headings:
             self.cell(col_width, header_height, heading, border=1, align="C", fill=True)
@@ -135,46 +120,46 @@ class Day:
     extras: list[str]
     is_holiday: bool
 
+def generate(s: Semester):
+    pdf = PDF(orientation='portrait', format='A4', unit='mm')
+    pdf.set_margin(5)
+    pdf.add_page()
 
-pdf = PDF(orientation='portrait', format='A4', unit='mm')
-pdf.set_margin(5)
-pdf.add_page()
+    pdf.set_font('helvetica', size=10)
+    header = [x for x in calendar.day_name]
+    rows = []
+    curr_day = date(s.year, s.start_month, s.start_day)
+    fill = False
+    in_break = False
+    assign_week = False
+    term_week = 0
+    for week in range(s.weeks_long):
+        row = []
+        if in_break and week + 1 == s.break_at_end_of_week + 3:
+            in_break = False
+        if not in_break:
+            term_week += 1
+        if term_week == s.assign_week_start:
+            assign_week = True
+        for day in range(7):
+            if curr_day.day == 1:
+                fill = not fill
+            month_day = (curr_day.month, curr_day.day)
+            bg = gray1 if fill else white
+            if term_week == s.break_at_end_of_week and day == 5:
+                in_break = True
+            if in_break:
+                bg = gray_break
+            extras = s.due_dates[month_day]
+            if month_day in s.holidays:
+                extras = [s.holidays[month_day]]
+                bg = holiday_gray
 
-pdf.set_font('helvetica', size=10)
-header = [x for x in calendar.day_name]
-rows = []
-curr_day = date(*semester_start)
-fill = False
-in_break = False
-assign_week = False
-term_week = 0
-for week in range(weeks):
-    row = []
-    if in_break and week + 1 == break_at_end_of_week + 3:
-        in_break = False
-    if not in_break:
-        term_week += 1
-    if term_week == assign_week_start:
-        assign_week = True
-    for day in range(7):
-        if curr_day.day == 1:
-            fill = not fill
-        month_day = (curr_day.month, curr_day.day)
-        bg = gray1 if fill else white
-        if term_week == break_at_end_of_week and day == 5:
-            in_break = True
-        if in_break:
-            bg = gray_break
-        extras = due_dates[month_day]
-        if month_day in holidays:
-            extras = [holidays[month_day]]
-            bg = holiday_gray
+            d = Day(number=curr_day.day, weekdaynum=day + 1, month=calendar.month_name[curr_day.month], bg=bg,
+                    assign_weeks=assign_week, in_break=in_break, extras=extras, is_holiday=month_day in s.holidays)
+            row.append(d)
+            curr_day += timedelta(1)
+        rows.append(row)
 
-        d = Day(number=curr_day.day, weekdaynum=day + 1, month=calendar.month_name[curr_day.month], bg=bg,
-                assign_weeks=assign_week, in_break=in_break, extras=extras, is_holiday=month_day in holidays)
-        row.append(d)
-        curr_day += timedelta(1)
-    rows.append(row)
-
-pdf.table(header, rows)
-pdf.output(f"timetable_{year}_{semester_name}.pdf")
+    pdf.table(header, rows)
+    pdf.output(f"timetable_{s.year}_{s.semester_name}.pdf")
