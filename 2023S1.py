@@ -1,6 +1,5 @@
 import semcal
 
-
 s = semcal.Semester(2023, 2, 20)
 
 s.semester_name = 'S1'  # for generated filename
@@ -31,6 +30,5 @@ s.holiday(4, 10, 'Easter')
 s.holiday(4, 25, 'ANZAC')
 s.holiday(4, 7, 'Easter')
 s.holiday(6, 5, "King's Birthday")
-
 
 semcal.generate(s)
