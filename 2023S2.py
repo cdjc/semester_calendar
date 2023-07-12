@@ -31,7 +31,7 @@ s.due(9, 7, 'NET Presentation')
 s.due(9, 22, 'NET Journal 1')
 s.due(9, 22, 'NET Tutorial')
 
-s.due(11, 3, 'NET Journal 2')
+s.due(11, 6, 'NET Journal 2')
 s.due(11, 16, 'NET Report')
 
 semcal.generate(s)
