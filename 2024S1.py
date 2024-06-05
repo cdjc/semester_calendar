@@ -6,7 +6,7 @@ s.semester_name = 'S1'  # for generated filename
 s.weeks_long = 19  # including mid-semester break
 s.break_at_end_of_week = 8  # week before semester break
 
-s.assign_week_start = 15
+s.assign_week_start = 16
 
 s.due(2, 19, "2024 S1")
 

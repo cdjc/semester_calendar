@@ -18,26 +18,31 @@ heavy_line_width = 0.4  # non-teaching days
 week_col_width = 5
 header_height = 6
 
+
 def check_date_valid(year: int, month: int, day: int):
-    date(year, month, day) # will raise ValueError if out of range
+    date(year, month, day)  # will raise ValueError if out of range
+
 
 class Semester:
-
     year: int = None
     start_month: int = None
     start_day: int = None
     weeks_long: int = None
     break_at_end_of_week: int = None
     assign_week_start: int = None
+    semester_name: str = None
 
     due_dates = defaultdict(list)
     holidays = defaultdict(str)
 
-    def __init__(self, year:int, month:int, day:int):
+    def __init__(self, year: int, month: int, day: int, semester_name: str = None):
         check_date_valid(year, month, day)
         self.year = year
         self.start_month = month
         self.start_day = day
+        self.semester_name = semester_name
+        if self.semester_name:
+            self.due(month, day, f'{year} {semester_name}')
 
     def due(self, month: int, day: int, piece: str):
         check_date_valid(self.year, month, day)
@@ -46,7 +51,6 @@ class Semester:
     def holiday(self, month: int, day: int, name: str):
         check_date_valid(self.year, month, day)
         self.holidays[(month, day)] = name
-
 
 
 class PDF(FPDF):
@@ -119,6 +123,7 @@ class Day:
     assign_weeks: bool
     extras: list[str]
     is_holiday: bool
+
 
 def generate(s: Semester):
     pdf = PDF(orientation='portrait', format='A4', unit='mm')
