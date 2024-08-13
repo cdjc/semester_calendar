@@ -1,1 +1,1 @@
-Calendar generator for NMIT semesters
+Calendar generator for creating PDF pages for NMIT semesters. Documentation to come.
