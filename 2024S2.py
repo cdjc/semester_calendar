@@ -26,13 +26,13 @@ s.due(10, 23, "SYD A1 Journal")
 s.due(9, 11, 'SYD A2 Failed')
 s.due(11, 6, 'SYD A3 Design')
 
-s.due(9, 5, "OSA Test")
-s.due(9, 19, 'OSA CompPrep')
+s.due(9, 11, "OSA Test")
+s.due(9, 25, 'OSA CompPrep')
 s.due(11, 13, 'OSA A3 Demo')
 
 s.due(9, 6, 'NET Presentation')
-s.due(9, 20, 'NET Journal 1')
-s.due(9, 20, 'NET Tutorial')
+s.due(9, 27, 'NET Journal 1')
+s.due(9, 27, 'NET Tutorial')
 
 s.due(11, 8, 'NET Report')
 
